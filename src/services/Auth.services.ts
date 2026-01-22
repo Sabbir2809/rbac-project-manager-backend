@@ -1,5 +1,4 @@
 import crypto from "crypto";
-import mongoose from "mongoose";
 import config from "../config";
 import { Invite } from "../models/Invite.model";
 import { User } from "../models/User.model";
@@ -16,6 +15,7 @@ import {
 } from "../utils/appError";
 import { generateJWT } from "../utils/generateToken";
 import { comparePassword, generateHashPassword } from "../utils/hashPassword";
+import { sendEmail } from "../utils/sendEmail";
 import { NotFoundError } from "./../utils/appError";
 
 const loginFromDB = async (payload: ILoginPayload) => {
@@ -51,55 +51,47 @@ const loginFromDB = async (payload: ILoginPayload) => {
   };
 };
 
-const createInviteIntoDB = async (payload: IInvitePayload) => {
-  const session = await mongoose.startSession();
-  let invite;
+export const createInviteIntoDB = async (payload: IInvitePayload) => {
+  // Check if user already exists
+  const user = await User.findOne({ email: payload.email });
+  if (user) throw new ConflictError("User with this email already exists");
 
-  try {
-    session.startTransaction();
+  // Generate token & expiry
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date();
+  expiresAt.setHours(expiresAt.getHours() + 24);
 
-    // Check existing user
-    const user = await User.findOne({ email: payload.email }).session(session);
-    if (user) {
-      throw new ConflictError("User with this email already exists");
-    }
+  // Find existing invite
+  let invite = await Invite.findOne({ email: payload.email });
 
-    // Generate token & expiry
-    const token = crypto.randomBytes(32).toString("hex");
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-
-    // Create or update invite
-    invite = await Invite.findOne({ email: payload.email }).session(session);
-
-    if (invite) {
-      invite.role = payload.role;
-      invite.token = token;
-      invite.expiresAt = expiresAt;
-      await invite.save({ session });
-    } else {
-      invite = await Invite.create(
-        {
-          email: payload.email,
-          role: payload.role,
-          token,
-          expiresAt,
-        },
-        { session }
-      );
-    }
-
-    const inviteLink = `http://localhost:3000/register?token=${token}`;
-
-    // Commit transaction FIRST
-    await session.commitTransaction();
-
-    return inviteLink;
-  } catch (error) {
-    await session.abortTransaction();
-    throw error;
-  } finally {
-    session.endSession();
+  if (invite) {
+    // Update existing invite
+    invite.role = payload.role;
+    invite.token = token;
+    invite.expiresAt = expiresAt;
+    await invite.save();
+  } else {
+    // Create new invite
+    invite = await Invite.create({
+      email: payload.email,
+      role: payload.role,
+      token,
+      expiresAt,
+    });
   }
+
+  // Send email
+  const inviteLink = `http://localhost:3000/register?token=${token}`;
+  await sendEmail(
+    payload.email,
+    "You're Invited!",
+    `<p>Hello,</p>
+     <p>You have been invited to join. Click the link below to register:</p>
+     <a href="${inviteLink}">${inviteLink}</a>
+     <p>This invite expires in 24 hours.</p>`
+  );
+
+  return inviteLink;
 };
 
 const registerViaInviteIntoDB = async (payload: IRegisterPayload) => {
