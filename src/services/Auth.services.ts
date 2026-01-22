@@ -81,7 +81,7 @@ export const createInviteIntoDB = async (payload: IInvitePayload) => {
   }
 
   // Send email
-  const inviteLink = `http://localhost:3000/register?token=${token}`;
+  const inviteLink = `${config.cors_origin}/register?token=${token}`;
   await sendEmail(
     payload.email,
     "You're Invited!",
