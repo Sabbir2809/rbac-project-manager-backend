@@ -5,6 +5,7 @@ import config from "./config";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
 import notFound from "./middlewares/notFound";
 import rateLimiter from "./middlewares/rateLimiter";
+import routers from "./routes";
 
 // Initialize express application
 const app: Application = express();
@@ -21,7 +22,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 // ---------- Application Routes ----------
-// app.use("/api/v1", routers);
+app.use("/api/v1", routers);
 
 // Health Check Endpoint
 app.get("/", (req: Request, res: Response) => {
