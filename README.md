@@ -8,7 +8,7 @@ RBAC Project Manager is a Role-Based Admin & Project Management System with Invi
 
 ## Features
 
-**User Management**
+**1. User Management:**
 
 - Users cannot self-register
 - Admin-generated invites
@@ -17,14 +17,14 @@ RBAC Project Manager is a Role-Based Admin & Project Management System with Invi
 - Activate / deactivate users
 - Deactivated users cannot log in
 
-**Project Management**
+**2. Project Management:**
 
 - Authenticated users can create projects
 - Only ADMIN can edit or delete projects
 - Soft delete for projects (not permanently removed)
 - All users can view projects
 
-**Security & Validation**
+**3. Security & Validation**
 
 - JWT authentication
 - Password hashing with bcrypt
@@ -34,7 +34,7 @@ RBAC Project Manager is a Role-Based Admin & Project Management System with Invi
 
 ---
 
-## Database Design
+## Database Design (ERD)
 
 ## ![Database](./ERD.png)
 
@@ -42,26 +42,44 @@ RBAC Project Manager is a Role-Based Admin & Project Management System with Invi
 
 ## REST API Endpoints
 
-**Authentication**
+**1. Authentication:**
 
 - `POST /auth/login` → Login with email/password
 - `POST /auth/invite` → Admin generates invite
 - `POST /auth/register-via-invite` → Complete registration using invite token
 
-**User Management (ADMIN only)**
+**2. User Management(ADMIN only):**
 
 - `GET /users` → List all users (paginated)
 - `PATCH /users/:id/role` → Update user role
 - `PATCH /users/:id/status` → Activate / deactivate user
 
-**Project Management**
+**3. Project Management:**
 
 - `POST /projects` → Create project
 - `GET /projects` → List projects
 - `PATCH /projects/:id` → Edit project (ADMIN only)
 - `DELETE /projects/:id` → Soft delete project (ADMIN only)
 
+Test all endpoints with our [Postman Collection](https://documenter.getpostman.com/view/15226030/2sBXVkB9XA)
+
 ---
+
+## Architecture
+
+### High-Level Architecture
+
+```
+ Client (Frontend)
+      ↓
+ REST API (Express.js)
+      ↓
+ Authentication & RBAC Middleware
+      ↓
+ Business Logic (Services)
+      ↓
+ MongoDB (Mongoose ODM)
+```
 
 ## Technology Stack
 
@@ -93,21 +111,17 @@ RBAC Project Manager is a Role-Based Admin & Project Management System with Invi
 
    ```bash
    NODE_ENVIRONMENT=development
-
-   PORT=
-   DATABASE_URL=
-   CORS_ORIGIN=
-
+   PORT=your_port
+   DATABASE_URL=your_mongodb_connection_string
+   CORS_ORIGIN=your_frontend_url
    # password
-   BCRYPT_SALT_ROUNDS=
-
+   BCRYPT_SALT_ROUNDS=your_bcrypt_salt_rounds
    # JWT
-   JWT_ACCESS_SECRET_KEY=
-   JWT_REFRESH_SECRET_KEY=
-
+   JWT_ACCESS_SECRET_KEY=your_jwt_access_secret_key
+   JWT_REFRESH_SECRET_KEY=your_jwt_refresh_secret_key
    # SMTP
-   SMTP_USER=
-   SMTP_PASSWORD=
+   SMTP_USER=your_smtp_email
+   SMTP_PASSWORD=your_smtp_password
    ```
 
 4. Run the development server:
