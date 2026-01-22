@@ -4,15 +4,14 @@ import express, { Application, Request, Response } from "express";
 import config from "./config";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
 import notFound from "./middlewares/notFound";
-import rateLimiter from "./middlewares/rateLimiter";
 import routers from "./routes";
 
 // Initialize express application
 const app: Application = express();
 
 // ---------- Global Middlewares ----------
-app.set("trust proxy", 1);
-app.use(rateLimiter);
+// app.set("trust proxy", 1);
+// app.use(rateLimiter);
 app.use(
   cors({
     origin: config.cors_origin ?? "*",
