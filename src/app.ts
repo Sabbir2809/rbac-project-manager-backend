@@ -11,6 +11,7 @@ import routers from "./routes";
 const app: Application = express();
 
 // ---------- Global Middlewares ----------
+app.set("trust proxy", 1);
 app.use(rateLimiter);
 app.use(
   cors({
