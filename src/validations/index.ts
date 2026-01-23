@@ -32,7 +32,7 @@ export const updateUserRoleSchema = z.object({
 
 export const updateUserStatusSchema = z.object({
   body: z.object({
-    role: z.enum([UserStatus.ACTIVE, UserStatus.INACTIVE]),
+    status: z.enum([UserStatus.ACTIVE, UserStatus.INACTIVE]),
   }),
 });
 
@@ -66,11 +66,5 @@ export const updateProjectSchema = z.object({
       ProjectStatus.ARCHIVED,
       ProjectStatus.DELETED,
     ]),
-  }),
-});
-
-export const deleteProjectSchema = z.object({
-  body: z.object({
-    isDeleted: z.boolean(),
   }),
 });

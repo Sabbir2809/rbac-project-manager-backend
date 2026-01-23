@@ -3,11 +3,7 @@ import { ProjectControllers } from "../controllers/Project.controllers";
 import authGuard from "../middlewares/authGuard";
 import validateRequest from "../middlewares/validateRequest";
 import { UserRole } from "../types/Auth.types";
-import {
-  createProjectSchema,
-  deleteProjectSchema,
-  updateProjectSchema,
-} from "../validations";
+import { createProjectSchema, updateProjectSchema } from "../validations";
 
 const router = Router();
 
@@ -40,7 +36,6 @@ router.patch(
 router.delete(
   "/:id",
   authGuard(UserRole.ADMIN),
-  validateRequest(deleteProjectSchema),
   ProjectControllers.deleteProject
 );
 

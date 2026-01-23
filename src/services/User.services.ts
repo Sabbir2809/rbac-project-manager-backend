@@ -2,27 +2,41 @@ import { User } from "../models/User.model";
 import { UserRole, UserStatus } from "../types/Auth.types";
 import { NotFoundError } from "../utils/appError";
 
-const getAllUsersFromDB = async (page: number = 1, limit: number = 10) => {
+const getAllUsersFromDB = async (
+  page: number = 1,
+  limit: number = 10,
+  search: string = "",
+  role?: string,
+  status?: string
+) => {
   const skip = (page - 1) * limit;
 
-  const users = await User.find()
+  const query: any = {};
+  if (search) {
+    query.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+    ];
+  }
+  if (role) query.role = role;
+  if (status) query.status = status;
+
+  const users = await User.find(query)
     .select("-password")
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
 
-  const total = await User.countDocuments();
-
-  const metaData = {
-    page,
-    limit,
-    total,
-    totalPage: Math.ceil(total / limit),
-  };
+  const total = await User.countDocuments(query);
 
   return {
-    meta: metaData,
     data: users,
+    meta: {
+      page,
+      limit,
+      total,
+      totalPage: Math.ceil(total / limit),
+    },
   };
 };
 

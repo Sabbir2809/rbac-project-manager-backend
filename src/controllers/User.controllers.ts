@@ -6,9 +6,18 @@ import sendResponse from "../utils/sendResponse";
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
+  const search = (req.query.search as string) || "";
+  const role = (req.query.role as string) || undefined;
+  const status = (req.query.status as string) || undefined;
 
   // service
-  const result = await UserServices.getAllUsersFromDB(page, limit);
+  const result = await UserServices.getAllUsersFromDB(
+    page,
+    limit,
+    search,
+    role,
+    status
+  );
 
   // send response
   sendResponse(res, {
