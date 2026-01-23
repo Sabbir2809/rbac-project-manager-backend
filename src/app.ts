@@ -1,25 +1,27 @@
-import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Application, Request, Response } from "express";
 import config from "./config";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
 import notFound from "./middlewares/notFound";
+import rateLimiter from "./middlewares/rateLimiter";
 import routers from "./routes";
 
 // Initialize express application
 const app: Application = express();
 
 // ---------- Global Middlewares ----------
-// app.set("trust proxy", 1);
-// app.use(rateLimiter);
+app.set("trust proxy", 1);
 app.use(
   cors({
-    origin: config.cors_origin ?? "*",
+    origin: config.cors_origin || [
+      "http://localhost:5173",
+      "http://localhost:3000",
+    ],
     credentials: true,
   })
 );
-app.use(cookieParser());
 app.use(express.json());
+app.use(rateLimiter);
 
 // ---------- Application Routes ----------
 app.use("/api/v1", routers);

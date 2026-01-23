@@ -65,22 +65,6 @@ Test all endpoints with our [Postman Collection](https://documenter.getpostman.c
 
 ---
 
-## Architecture
-
-### High-Level Architecture
-
-```
- Client (Frontend)
-      ↓
- REST API (Express.js)
-      ↓
- Authentication & RBAC Middleware
-      ↓
- Business Logic (Services)
-      ↓
- MongoDB (Mongoose ODM)
-```
-
 ## Technology Stack
 
 - **Programming Language:** TypeScript
@@ -114,18 +98,28 @@ Test all endpoints with our [Postman Collection](https://documenter.getpostman.c
    PORT=your_port
    DATABASE_URL=your_mongodb_connection_string
    CORS_ORIGIN=your_frontend_url
+
    # password
    BCRYPT_SALT_ROUNDS=your_bcrypt_salt_rounds
+
    # JWT
    JWT_ACCESS_SECRET_KEY=your_jwt_access_secret_key
    JWT_REFRESH_SECRET_KEY=your_jwt_refresh_secret_key
+
    # SMTP
    SMTP_USER=your_smtp_email
    SMTP_PASSWORD=your_smtp_password
    ```
 
-4. Run the development server:
+4. Seed the database:
+
+   ```bash
+   # Seed sample data
+   yarn seed
+   ```
+
+5. Run the development server:
+
    ```bash
    yarn dev
    ```
-5. Open `http://localhost:5000` in your browser.
