@@ -84,11 +84,25 @@ export const createInviteIntoDB = async (payload: IInvitePayload) => {
   const inviteLink = `${config.cors_origin}/register?token=${token}`;
   await sendEmail(
     payload.email,
-    "You're Invited!",
-    `<p>Hello,</p>
-     <p>You have been invited to join. Click the link below to register:</p>
-     <a href="${inviteLink}">${inviteLink}</a>
-     <p>This invite expires in 24 hours.</p>`
+    "You're Invited to RBAC Project Manager",
+    `
+    <p>Hello,</p>
+  
+    <p>
+      You’ve been invited to join <strong>RBAC Project Manager</strong>.
+      Click the link below to complete your registration:
+    </p>
+  
+    <p>
+      <a href="${inviteLink}">${inviteLink}</a>
+    </p>
+  
+    <p>
+      This invitation will expire in 24 hours.
+    </p>
+
+    <p>— RBAC Project Manager</p>
+    `
   );
 
   return inviteLink;
