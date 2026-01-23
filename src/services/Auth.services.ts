@@ -104,8 +104,6 @@ export const createInviteIntoDB = async (payload: IInvitePayload) => {
     <p>— RBAC Project Manager</p>
     `
   );
-
-  return inviteLink;
 };
 
 const registerViaInviteIntoDB = async (payload: IRegisterPayload) => {

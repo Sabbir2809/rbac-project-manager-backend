@@ -18,14 +18,13 @@ const login = catchAsync(async (req: Request, res: Response) => {
 
 const createInvite = catchAsync(async (req: Request, res: Response) => {
   // service
-  const result = await AuthServices.createInviteIntoDB(req.body);
+  await AuthServices.createInviteIntoDB(req.body);
 
   // send response
   sendResponse(res, {
     success: true,
     statusCode: 201,
     message: `Invite sent successfully to Email: ${req.body.email}`,
-    data: result,
   });
 });
 
